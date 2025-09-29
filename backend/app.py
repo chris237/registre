@@ -5,6 +5,7 @@ from functools import wraps
 from flask import Flask, request, jsonify, g
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
+from sqlalchemy import text
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
@@ -104,6 +105,78 @@ def ensure_default_admin():
         )
         db.session.add(admin)
         db.session.commit()
+
+
+def ensure_schema():
+    schema_spec = {
+        'mandat': [
+            ('dateSignature', 'VARCHAR(50)'),
+            ('statutMandat', 'VARCHAR(50)'),
+            ('typeTransaction', 'VARCHAR(50)'),
+            ('proprietaire', 'VARCHAR(100)'),
+            ('adresse', 'TEXT'),
+            ('caracteristiques', 'TEXT'),
+            ('prixSouhaite', 'VARCHAR(50)'),
+            ('commission', 'VARCHAR(50)'),
+            ('validite', 'VARCHAR(50)'),
+            ('dateFinalisation', 'VARCHAR(50)'),
+            ('acquereur', 'VARCHAR(100)')
+        ],
+        'transaction': [
+            ('numeroTransaction', 'VARCHAR(50)'),
+            ('dateTransaction', 'VARCHAR(50)'),
+            ('mandatRef', 'VARCHAR(50)'),
+            ('typeTransaction', 'VARCHAR(50)'),
+            ('prix', 'VARCHAR(50)'),
+            ('commissionTotale', 'VARCHAR(50)'),
+            ('client', 'VARCHAR(120)'),
+            ('observations', 'TEXT')
+        ],
+        'suivi': [
+            ('dateSuivi', 'VARCHAR(50)'),
+            ('contact', 'VARCHAR(120)'),
+            ('resultat', 'VARCHAR(200)'),
+            ('prochaineEtape', 'VARCHAR(200)'),
+            ('datePrevue', 'VARCHAR(50)')
+        ],
+        'recherche': [
+            ('numeroDemande', 'VARCHAR(50)'),
+            ('dateDemande', 'VARCHAR(50)'),
+            ('typeBien', 'VARCHAR(120)'),
+            ('budget', 'VARCHAR(50)'),
+            ('criteres', 'TEXT'),
+            ('biensProposes', 'TEXT'),
+            ('statutDemande', 'VARCHAR(100)')
+        ],
+        'gestion_locative': [
+            ('adresse', 'TEXT'),
+            ('proprietaire', 'VARCHAR(120)'),
+            ('dateDebutBail', 'VARCHAR(50)'),
+            ('loyer', 'VARCHAR(50)'),
+            ('statutLoyer', 'VARCHAR(100)'),
+            ('datePaiement', 'VARCHAR(50)'),
+            ('observations', 'TEXT')
+        ]
+    }
+
+    connection = db.session.connection()
+
+    for table, columns in schema_spec.items():
+        existing_columns = {
+            row[1]
+            for row in connection.execute(text(f'PRAGMA table_info("{table}")'))
+        }
+
+        for column_name, column_type in columns:
+            if column_name not in existing_columns:
+                connection.execute(
+                    text(
+                        f'ALTER TABLE "{table}" '
+                        f'ADD COLUMN "{column_name}" {column_type}'
+                    )
+                )
+
+    db.session.commit()
 
 
 def to_dict(obj):
@@ -278,10 +351,12 @@ def create_user():
 if __name__ == '__main__':
     with app.app_context():   # ✅ corrige l'erreur "outside of application context"
         db.create_all()
+        ensure_schema()
         ensure_default_admin()
     app.run(host="0.0.0.0", port=5000, debug=True)
 
 
 with app.app_context():
     db.create_all()
+    ensure_schema()
     ensure_default_admin()
