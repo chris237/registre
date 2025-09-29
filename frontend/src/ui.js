@@ -1,12 +1,143 @@
 import { api } from "./api.js";
 
-const registerConfigs = [
-  { name: "mandats", tableId: "mandatTable", formId: "mandatForm", endpoint: "mandats", fields: ["numero", "typeMandat"] },
-  { name: "transactions", tableId: "transactionTable", formId: "transactionForm", endpoint: "transactions", fields: ["numero", "bien"] },
-  { name: "suivi", tableId: "suiviTable", formId: "suiviForm", endpoint: "suivi", fields: ["numeroMandat", "action"] },
-  { name: "recherche", tableId: "rechercheTable", formId: "rechercheForm", endpoint: "recherche", fields: ["numero", "client"] },
-  { name: "gestion", tableId: "gestionTable", formId: "gestionForm", endpoint: "gestion", fields: ["numeroBien", "locataire"] }
-];
+const registerSchema = {
+  mandats: [
+    "numero",
+    "dateSignature",
+    "typeMandat",
+    "statutMandat",
+    "typeTransaction",
+    "proprietaire",
+    "adresse",
+    "caracteristiques",
+    "prixSouhaite",
+    "commission",
+    "validite",
+    "dateFinalisation",
+    "acquereur"
+  ],
+  suivi: [
+    "numeroMandat",
+    "dateSuivi",
+    "action",
+    "contact",
+    "resultat",
+    "prochaineEtape",
+    "datePrevue"
+  ],
+  transactions: [
+    "numeroTransaction",
+    "dateTransaction",
+    "mandatRef",
+    "typeTransaction",
+    "bien",
+    "prix",
+    "commissionTotale",
+    "client",
+    "observations"
+  ],
+  gestion_locative: [
+    "numeroBien",
+    "adresse",
+    "proprietaire",
+    "locataire",
+    "dateDebutBail",
+    "loyer",
+    "statutLoyer",
+    "datePaiement",
+    "observations"
+  ],
+  recherche: [
+    "numeroDemande",
+    "dateDemande",
+    "client",
+    "typeBien",
+    "budget",
+    "criteres",
+    "biensProposes",
+    "statutDemande"
+  ]
+};
+
+const registerTitles = {
+  mandats: "Registre des Mandats",
+  suivi: "Registre de Suivi",
+  transactions: "Registre des Transactions",
+  gestion_locative: "Registre de Gestion Locative",
+  recherche: "Registre de Recherche"
+};
+
+const registerHeaders = {
+  mandats: [
+    "Numéro",
+    "Date Signature",
+    "Type",
+    "Statut",
+    "Transaction",
+    "Propriétaire",
+    "Adresse",
+    "Caractéristiques",
+    "Prix Souhaité",
+    "Commission",
+    "Validité",
+    "Finalisation",
+    "Acquéreur",
+    "Actions"
+  ],
+  suivi: [
+    "Réf. Mandat",
+    "Date",
+    "Action",
+    "Contact",
+    "Résultat",
+    "Prochaine Étape",
+    "Date Prévue",
+    "Actions"
+  ],
+  transactions: [
+    "Numéro",
+    "Date",
+    "Réf. Mandat",
+    "Type",
+    "Bien",
+    "Prix",
+    "Commission",
+    "Client",
+    "Observations",
+    "Actions"
+  ],
+  gestion_locative: [
+    "Réf. Bien",
+    "Adresse",
+    "Propriétaire",
+    "Locataire",
+    "Début Bail",
+    "Loyer",
+    "Statut",
+    "Paiement",
+    "Observations",
+    "Actions"
+  ],
+  recherche: [
+    "Numéro",
+    "Date",
+    "Client",
+    "Type de Bien",
+    "Budget",
+    "Critères",
+    "Biens Proposés",
+    "Statut",
+    "Actions"
+  ]
+};
+
+const registerConfigs = Object.entries(registerSchema).map(([name, fields]) => ({
+  name,
+  tableId: `${name}Table`,
+  formId: `${name}Form`,
+  endpoint: name === "gestion_locative" ? "gestion" : name,
+  fields
+}));
 
 const registerControllers = new Map();
 let registersInitialized = false;
