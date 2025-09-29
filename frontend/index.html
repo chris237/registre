@@ -97,10 +97,10 @@
     <div class="bg-white rounded-lg shadow-md p-4 md:p-6 mb-6">
       <div class="flex flex-wrap gap-2 md:gap-4">
         <button class="nav-button bg-gray-800 text-white font-semibold px-4 py-2 rounded-md transition duration-300" data-section="mandats">Mandats</button>
-        <button class="nav-button bg-gray-200 text-gray-700 font-semibold px-4 py-2 rounded-md transition duration-300" data-section="transactions">Transactions</button>
         <button class="nav-button bg-gray-200 text-gray-700 font-semibold px-4 py-2 rounded-md transition duration-300" data-section="suivi">Suivi</button>
+        <button class="nav-button bg-gray-200 text-gray-700 font-semibold px-4 py-2 rounded-md transition duration-300" data-section="transactions">Transactions</button>
+        <button class="nav-button bg-gray-200 text-gray-700 font-semibold px-4 py-2 rounded-md transition duration-300" data-section="gestion_locative">Gestion locative</button>
         <button class="nav-button bg-gray-200 text-gray-700 font-semibold px-4 py-2 rounded-md transition duration-300" data-section="recherche">Recherche</button>
-        <button class="nav-button bg-gray-200 text-gray-700 font-semibold px-4 py-2 rounded-md transition duration-300" data-section="gestion">Gestion locative</button>
       </div>
     </div>
 
@@ -114,10 +114,21 @@
       <section class="register-section" data-section="mandats">
         <div class="bg-white shadow-md rounded-lg p-6 space-y-6">
           <div>
-            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Registre des mandats</h2>
-            <form id="mandatForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Registre des Mandats</h2>
+            <form id="mandatsForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <input type="text" name="numero" placeholder="Numéro" class="border rounded-md p-2" required />
-              <input type="text" name="typeMandat" placeholder="Type" class="border rounded-md p-2" />
+              <input type="date" name="dateSignature" placeholder="Date de signature" class="border rounded-md p-2" />
+              <input type="text" name="typeMandat" placeholder="Type de mandat" class="border rounded-md p-2" />
+              <input type="text" name="statutMandat" placeholder="Statut du mandat" class="border rounded-md p-2" />
+              <input type="text" name="typeTransaction" placeholder="Type de transaction" class="border rounded-md p-2" />
+              <input type="text" name="proprietaire" placeholder="Propriétaire" class="border rounded-md p-2" />
+              <textarea name="adresse" placeholder="Adresse" class="border rounded-md p-2 md:col-span-2" rows="2"></textarea>
+              <textarea name="caracteristiques" placeholder="Caractéristiques" class="border rounded-md p-2 md:col-span-2" rows="2"></textarea>
+              <input type="number" step="0.01" name="prixSouhaite" placeholder="Prix souhaité" class="border rounded-md p-2" />
+              <input type="number" step="0.01" name="commission" placeholder="Commission" class="border rounded-md p-2" />
+              <input type="text" name="validite" placeholder="Validité" class="border rounded-md p-2" />
+              <input type="date" name="dateFinalisation" placeholder="Date de finalisation" class="border rounded-md p-2" />
+              <input type="text" name="acquereur" placeholder="Acquéreur" class="border rounded-md p-2" />
               <div class="md:col-span-2">
                 <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-2 rounded-md transition duration-300">
                   Ajouter un mandat
@@ -126,11 +137,22 @@
             </form>
           </div>
           <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200" id="mandatTable">
+            <table class="min-w-full divide-y divide-gray-200" id="mandatsTable">
               <thead class="bg-gray-50">
                 <tr>
                   <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Numéro</th>
+                  <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date Signature</th>
                   <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                  <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Statut</th>
+                  <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Transaction</th>
+                  <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Propriétaire</th>
+                  <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Adresse</th>
+                  <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Caractéristiques</th>
+                  <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Prix Souhaité</th>
+                  <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Commission</th>
+                  <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Validité</th>
+                  <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Finalisation</th>
+                  <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acquéreur</th>
                   <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
@@ -143,10 +165,17 @@
       <section class="register-section hidden" data-section="transactions">
         <div class="bg-white shadow-md rounded-lg p-6 space-y-6">
           <div>
-            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Registre des transactions</h2>
-            <form id="transactionForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <input type="text" name="numero" placeholder="Numéro" class="border rounded-md p-2" required />
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Registre des Transactions</h2>
+            <form id="transactionsForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <input type="text" name="numeroTransaction" placeholder="Numéro de transaction" class="border rounded-md p-2" required />
+              <input type="date" name="dateTransaction" placeholder="Date" class="border rounded-md p-2" />
+              <input type="text" name="mandatRef" placeholder="Référence mandat" class="border rounded-md p-2" />
+              <input type="text" name="typeTransaction" placeholder="Type de transaction" class="border rounded-md p-2" />
               <input type="text" name="bien" placeholder="Bien" class="border rounded-md p-2" />
+              <input type="number" step="0.01" name="prix" placeholder="Prix" class="border rounded-md p-2" />
+              <input type="number" step="0.01" name="commissionTotale" placeholder="Commission totale" class="border rounded-md p-2" />
+              <input type="text" name="client" placeholder="Client" class="border rounded-md p-2" />
+              <textarea name="observations" placeholder="Observations" class="border rounded-md p-2 md:col-span-2" rows="2"></textarea>
               <div class="md:col-span-2">
                 <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-2 rounded-md transition duration-300">
                   Ajouter une transaction
@@ -155,11 +184,18 @@
             </form>
           </div>
           <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200" id="transactionTable">
+            <table class="min-w-full divide-y divide-gray-200" id="transactionsTable">
               <thead class="bg-gray-50">
                 <tr>
                   <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Numéro</th>
+                  <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                  <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Réf. Mandat</th>
+                  <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
                   <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bien</th>
+                  <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Prix</th>
+                  <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Commission</th>
+                  <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Client</th>
+                  <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Observations</th>
                   <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
@@ -172,10 +208,15 @@
       <section class="register-section hidden" data-section="suivi">
         <div class="bg-white shadow-md rounded-lg p-6 space-y-6">
           <div>
-            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Registre de suivi</h2>
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Registre de Suivi</h2>
             <form id="suiviForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <input type="text" name="numeroMandat" placeholder="Mandat" class="border rounded-md p-2" required />
+              <input type="text" name="numeroMandat" placeholder="Référence mandat" class="border rounded-md p-2" required />
+              <input type="date" name="dateSuivi" placeholder="Date de suivi" class="border rounded-md p-2" />
               <input type="text" name="action" placeholder="Action" class="border rounded-md p-2" />
+              <input type="text" name="contact" placeholder="Contact" class="border rounded-md p-2" />
+              <textarea name="resultat" placeholder="Résultat" class="border rounded-md p-2 md:col-span-2" rows="2"></textarea>
+              <input type="text" name="prochaineEtape" placeholder="Prochaine étape" class="border rounded-md p-2" />
+              <input type="date" name="datePrevue" placeholder="Date prévue" class="border rounded-md p-2" />
               <div class="md:col-span-2">
                 <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-2 rounded-md transition duration-300">
                   Ajouter un suivi
@@ -187,8 +228,56 @@
             <table class="min-w-full divide-y divide-gray-200" id="suiviTable">
               <thead class="bg-gray-50">
                 <tr>
-                  <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mandat</th>
+                  <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Réf. Mandat</th>
+                  <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
                   <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+                  <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th>
+                  <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Résultat</th>
+                  <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Prochaine Étape</th>
+                  <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date Prévue</th>
+                  <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="register-section hidden" data-section="gestion_locative">
+        <div class="bg-white shadow-md rounded-lg p-6 space-y-6">
+          <div>
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Registre de Gestion Locative</h2>
+            <form id="gestion_locativeForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <input type="text" name="numeroBien" placeholder="Référence bien" class="border rounded-md p-2" required />
+              <textarea name="adresse" placeholder="Adresse" class="border rounded-md p-2 md:col-span-2" rows="2"></textarea>
+              <input type="text" name="proprietaire" placeholder="Propriétaire" class="border rounded-md p-2" />
+              <input type="text" name="locataire" placeholder="Locataire" class="border rounded-md p-2" />
+              <input type="date" name="dateDebutBail" placeholder="Début du bail" class="border rounded-md p-2" />
+              <input type="number" step="0.01" name="loyer" placeholder="Loyer" class="border rounded-md p-2" />
+              <input type="text" name="statutLoyer" placeholder="Statut du loyer" class="border rounded-md p-2" />
+              <input type="date" name="datePaiement" placeholder="Date de paiement" class="border rounded-md p-2" />
+              <textarea name="observations" placeholder="Observations" class="border rounded-md p-2 md:col-span-2" rows="2"></textarea>
+              <div class="md:col-span-2">
+                <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-2 rounded-md transition duration-300">
+                  Ajouter une fiche
+                </button>
+              </div>
+            </form>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200" id="gestion_locativeTable">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Réf. Bien</th>
+                  <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Adresse</th>
+                  <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Propriétaire</th>
+                  <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Locataire</th>
+                  <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Début Bail</th>
+                  <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Loyer</th>
+                  <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Statut</th>
+                  <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Paiement</th>
+                  <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Observations</th>
                   <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
@@ -201,13 +290,19 @@
       <section class="register-section hidden" data-section="recherche">
         <div class="bg-white shadow-md rounded-lg p-6 space-y-6">
           <div>
-            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Registre de recherche</h2>
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Registre de Recherche</h2>
             <form id="rechercheForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <input type="text" name="numero" placeholder="Numéro" class="border rounded-md p-2" required />
+              <input type="text" name="numeroDemande" placeholder="Numéro de demande" class="border rounded-md p-2" required />
+              <input type="date" name="dateDemande" placeholder="Date de demande" class="border rounded-md p-2" />
               <input type="text" name="client" placeholder="Client" class="border rounded-md p-2" />
+              <input type="text" name="typeBien" placeholder="Type de bien" class="border rounded-md p-2" />
+              <input type="number" step="0.01" name="budget" placeholder="Budget" class="border rounded-md p-2" />
+              <textarea name="criteres" placeholder="Critères" class="border rounded-md p-2 md:col-span-2" rows="2"></textarea>
+              <textarea name="biensProposes" placeholder="Biens proposés" class="border rounded-md p-2 md:col-span-2" rows="2"></textarea>
+              <input type="text" name="statutDemande" placeholder="Statut" class="border rounded-md p-2" />
               <div class="md:col-span-2">
                 <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-2 rounded-md transition duration-300">
-                  Ajouter une recherche
+                  Ajouter une demande
                 </button>
               </div>
             </form>
@@ -217,36 +312,13 @@
               <thead class="bg-gray-50">
                 <tr>
                   <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Numéro</th>
+                  <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
                   <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Client</th>
-                  <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                </tr>
-              </thead>
-              <tbody></tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      <section class="register-section hidden" data-section="gestion">
-        <div class="bg-white shadow-md rounded-lg p-6 space-y-6">
-          <div>
-            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Gestion locative</h2>
-            <form id="gestionForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <input type="text" name="numeroBien" placeholder="Numéro de bien" class="border rounded-md p-2" required />
-              <input type="text" name="locataire" placeholder="Locataire" class="border rounded-md p-2" />
-              <div class="md:col-span-2">
-                <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-2 rounded-md transition duration-300">
-                  Ajouter une fiche
-                </button>
-              </div>
-            </form>
-          </div>
-          <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200" id="gestionTable">
-              <thead class="bg-gray-50">
-                <tr>
-                  <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Numéro de bien</th>
-                  <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Locataire</th>
+                  <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type de Bien</th>
+                  <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Budget</th>
+                  <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Critères</th>
+                  <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Biens Proposés</th>
+                  <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Statut</th>
                   <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>

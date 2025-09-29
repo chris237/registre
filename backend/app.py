@@ -32,27 +32,67 @@ class User(db.Model):
 class Mandat(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     numero = db.Column(db.String(50), nullable=False)
+    dateSignature = db.Column(db.String(50))
     typeMandat = db.Column(db.String(50))
+    statutMandat = db.Column(db.String(50))
+    typeTransaction = db.Column(db.String(50))
+    proprietaire = db.Column(db.String(100))
+    adresse = db.Column(db.Text)
+    caracteristiques = db.Column(db.Text)
+    prixSouhaite = db.Column(db.String(50))
+    commission = db.Column(db.String(50))
+    validite = db.Column(db.String(50))
+    dateFinalisation = db.Column(db.String(50))
+    acquereur = db.Column(db.String(100))
+
 
 class Transaction(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    numero = db.Column(db.String(50), nullable=False)
+    numeroTransaction = db.Column(db.String(50), nullable=False)
+    dateTransaction = db.Column(db.String(50))
+    mandatRef = db.Column(db.String(50))
+    typeTransaction = db.Column(db.String(50))
     bien = db.Column(db.String(200))
+    prix = db.Column(db.String(50))
+    commissionTotale = db.Column(db.String(50))
+    client = db.Column(db.String(120))
+    observations = db.Column(db.Text)
+
 
 class Suivi(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     numeroMandat = db.Column(db.String(50), nullable=False)
+    dateSuivi = db.Column(db.String(50))
     action = db.Column(db.String(100))
+    contact = db.Column(db.String(120))
+    resultat = db.Column(db.String(200))
+    prochaineEtape = db.Column(db.String(200))
+    datePrevue = db.Column(db.String(50))
+
 
 class Recherche(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    numero = db.Column(db.String(50), nullable=False)
-    client = db.Column(db.String(100))
+    numeroDemande = db.Column(db.String(50), nullable=False)
+    dateDemande = db.Column(db.String(50))
+    client = db.Column(db.String(120))
+    typeBien = db.Column(db.String(120))
+    budget = db.Column(db.String(50))
+    criteres = db.Column(db.Text)
+    biensProposes = db.Column(db.Text)
+    statutDemande = db.Column(db.String(100))
+
 
 class GestionLocative(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     numeroBien = db.Column(db.String(50), nullable=False)
-    locataire = db.Column(db.String(100))
+    adresse = db.Column(db.Text)
+    proprietaire = db.Column(db.String(120))
+    locataire = db.Column(db.String(120))
+    dateDebutBail = db.Column(db.String(50))
+    loyer = db.Column(db.String(50))
+    statutLoyer = db.Column(db.String(100))
+    datePaiement = db.Column(db.String(50))
+    observations = db.Column(db.Text)
 
 # ---- HELPERS ----
 def ensure_default_admin():
