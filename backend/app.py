@@ -1,3 +1,5 @@
+import logging
+import os
 import secrets
 from datetime import datetime
 from functools import wraps
@@ -5,11 +7,27 @@ from functools import wraps
 from flask import Flask, request, jsonify, g
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
+from logging.handlers import RotatingFileHandler
 from sqlalchemy import text
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
-CORS(app)
+ALLOWED_ORIGINS = {"http://localhost:5173", "http://127.0.0.1:5173"}
+
+CORS(
+    app,
+    resources={r"/api/*": {"origins": list(ALLOWED_ORIGINS)}},
+    supports_credentials=True,
+    allow_headers=["Content-Type", "Authorization"],
+    methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+)
+
+os.makedirs("logs", exist_ok=True)
+log_handler = RotatingFileHandler("logs/app.log", maxBytes=1024 * 1024, backupCount=5)
+log_handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
+log_handler.setLevel(logging.INFO)
+app.logger.addHandler(log_handler)
+app.logger.setLevel(logging.INFO)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 db = SQLAlchemy(app)
@@ -187,6 +205,32 @@ def error_response(message, status):
     return jsonify({'error': message}), status
 
 
+@app.route('/api/<path:_unused>', methods=['OPTIONS'])
+def handle_api_options(_unused):
+    response = app.make_default_options_response()
+    return response
+
+
+@app.after_request
+def add_cors_headers(response):
+    origin = request.headers.get("Origin")
+    if origin in ALLOWED_ORIGINS:
+        response.headers["Access-Control-Allow-Origin"] = origin
+    else:
+        response.headers.setdefault("Access-Control-Allow-Origin", "*")
+    response.headers.add("Vary", "Origin")
+    response.headers.add("Access-Control-Allow-Credentials", "true")
+    response.headers.add(
+        "Access-Control-Allow-Headers",
+        "Content-Type, Authorization, X-Requested-With",
+    )
+    response.headers.add(
+        "Access-Control-Allow-Methods",
+        "GET, POST, PUT, PATCH, DELETE, OPTIONS",
+    )
+    return response
+
+
 def get_bearer_token():
     auth_header = request.headers.get('Authorization', '')
     if auth_header.startswith('Bearer '):
@@ -267,12 +311,14 @@ def login():
     password = data.get('password')
 
     if not email or not password:
+        app.logger.warning("Login attempt rejected due to missing credentials")
         return error_response('Email and password are required', 400)
 
     email = email.strip().lower()
 
     user = User.query.filter_by(email=email).first()
     if not user or not check_password_hash(user.password_hash, password):
+        app.logger.warning("Failed login attempt for %s", email)
         return error_response('Invalid credentials', 401)
 
     AuthToken.query.filter_by(user_id=user.id).delete()
@@ -280,6 +326,8 @@ def login():
     token = AuthToken(token=token_value, user=user)
     db.session.add(token)
     db.session.commit()
+
+    app.logger.info("User %s authenticated successfully", email)
 
     return jsonify({
         'token': token_value,
@@ -309,6 +357,7 @@ def me():
 def logout():
     db.session.delete(g.auth_token)
     db.session.commit()
+    app.logger.info("User %s logged out", g.current_user.email)
     return '', 204
 
 
@@ -340,6 +389,13 @@ def create_user():
     )
     db.session.add(user)
     db.session.commit()
+
+    app.logger.info(
+        "Admin %s created a new user %s with role %s",
+        g.current_user.email,
+        user.email,
+        user.role,
+    )
 
     return jsonify({
         'id': user.id,
