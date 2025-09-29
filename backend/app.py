@@ -1,6 +1,11 @@
-from flask import Flask, request, jsonify
+import secrets
+from datetime import datetime
+from functools import wraps
+
+from flask import Flask, request, jsonify, g
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
+from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 CORS(app)
@@ -9,6 +14,21 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 db = SQLAlchemy(app)
 
 # ---- MODELS ----
+class AuthToken(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    token = db.Column(db.String(64), unique=True, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password_hash = db.Column(db.String(128), nullable=False)
+    role = db.Column(db.String(20), default='agent', nullable=False)
+    tokens = db.relationship('AuthToken', backref='user', cascade='all, delete-orphan')
+
+
 class Mandat(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     numero = db.Column(db.String(50), nullable=False)
@@ -35,15 +55,61 @@ class GestionLocative(db.Model):
     locataire = db.Column(db.String(100))
 
 # ---- HELPERS ----
+def ensure_default_admin():
+    if not User.query.filter_by(email='admin@example.com').first():
+        admin = User(
+            email='admin@example.com',
+            password_hash=generate_password_hash('admin123'),
+            role='admin'
+        )
+        db.session.add(admin)
+        db.session.commit()
+
+
 def to_dict(obj):
     return {c.name: getattr(obj, c.name) for c in obj.__table__.columns}
+
+
+def error_response(message, status):
+    return jsonify({'error': message}), status
+
+
+def get_bearer_token():
+    auth_header = request.headers.get('Authorization', '')
+    if auth_header.startswith('Bearer '):
+        return auth_header.split(' ', 1)[1].strip()
+    return None
+
+
+def login_required(view_func):
+    @wraps(view_func)
+    def wrapped(*args, **kwargs):
+        token_value = get_bearer_token()
+        if not token_value:
+            return error_response('Authentication required', 401)
+
+        token = AuthToken.query.filter_by(token=token_value).first()
+        if not token:
+            return error_response('Invalid or expired token', 401)
+
+        g.current_user = token.user
+        g.auth_token = token
+        return view_func(*args, **kwargs)
+
+    return wrapped
+
 
 def register_crud(model, endpoint):
     # GET
     def list_items():
         items = model.query.all()
         return jsonify([to_dict(i) for i in items])
-    app.add_url_rule(f"/api/{endpoint}", f"list_{endpoint}", list_items, methods=["GET"])
+    app.add_url_rule(
+        f"/api/{endpoint}",
+        f"list_{endpoint}",
+        login_required(list_items),
+        methods=["GET"]
+    )
 
     # POST
     def create_item():
@@ -52,7 +118,12 @@ def register_crud(model, endpoint):
         db.session.add(item)
         db.session.commit()
         return jsonify({"id": item.id}), 201
-    app.add_url_rule(f"/api/{endpoint}", f"create_{endpoint}", create_item, methods=["POST"])
+    app.add_url_rule(
+        f"/api/{endpoint}",
+        f"create_{endpoint}",
+        login_required(create_item),
+        methods=["POST"]
+    )
 
     # DELETE
     def delete_item(item_id):
@@ -62,7 +133,12 @@ def register_crud(model, endpoint):
         db.session.delete(item)
         db.session.commit()
         return '', 204
-    app.add_url_rule(f"/api/{endpoint}/<int:item_id>", f"delete_{endpoint}", delete_item, methods=["DELETE"])
+    app.add_url_rule(
+        f"/api/{endpoint}/<int:item_id>",
+        f"delete_{endpoint}",
+        login_required(delete_item),
+        methods=["DELETE"]
+    )
 
 # Register all CRUD
 register_crud(Mandat, "mandats")
@@ -71,7 +147,101 @@ register_crud(Suivi, "suivi")
 register_crud(Recherche, "recherche")
 register_crud(GestionLocative, "gestion")
 
+@app.route('/api/auth/login', methods=['POST'])
+def login():
+    data = request.json or {}
+    email = data.get('email')
+    password = data.get('password')
+
+    if not email or not password:
+        return error_response('Email and password are required', 400)
+
+    email = email.strip().lower()
+
+    user = User.query.filter_by(email=email).first()
+    if not user or not check_password_hash(user.password_hash, password):
+        return error_response('Invalid credentials', 401)
+
+    AuthToken.query.filter_by(user_id=user.id).delete()
+    token_value = secrets.token_hex(32)
+    token = AuthToken(token=token_value, user=user)
+    db.session.add(token)
+    db.session.commit()
+
+    return jsonify({
+        'token': token_value,
+        'user': {
+            'id': user.id,
+            'email': user.email,
+            'role': user.role
+        }
+    })
+
+
+@app.route('/api/auth/me', methods=['GET'])
+@login_required
+def me():
+    user = g.current_user
+    return jsonify({
+        'user': {
+            'id': user.id,
+            'email': user.email,
+            'role': user.role
+        }
+    })
+
+
+@app.route('/api/auth/logout', methods=['POST'])
+@login_required
+def logout():
+    db.session.delete(g.auth_token)
+    db.session.commit()
+    return '', 204
+
+
+@app.route('/api/users', methods=['POST'])
+@login_required
+def create_user():
+    if g.current_user.role != 'admin':
+        return error_response('Admin privileges required', 403)
+
+    data = request.json or {}
+    email = data.get('email')
+    password = data.get('password')
+    role = data.get('role', 'agent')
+
+    if not email or not password:
+        return error_response('Email and password are required', 400)
+
+    email = email.lower().strip()
+    if User.query.filter_by(email=email).first():
+        return error_response('Email already registered', 409)
+
+    if role not in {'agent', 'admin'}:
+        return error_response('Invalid role', 400)
+
+    user = User(
+        email=email,
+        password_hash=generate_password_hash(password),
+        role=role
+    )
+    db.session.add(user)
+    db.session.commit()
+
+    return jsonify({
+        'id': user.id,
+        'email': user.email,
+        'role': user.role
+    }), 201
+
+
 if __name__ == '__main__':
     with app.app_context():   # ✅ corrige l'erreur "outside of application context"
         db.create_all()
+        ensure_default_admin()
     app.run(host="0.0.0.0", port=5000, debug=True)
+
+
+with app.app_context():
+    db.create_all()
+    ensure_default_admin()
