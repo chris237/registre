@@ -1,4 +1,5 @@
-const API_URL = "http://localhost:5000/api";
+const rawApiUrl = import.meta?.env?.VITE_API_URL;
+const API_URL = (rawApiUrl ? rawApiUrl : "/api").replace(/\/+$/, "");
 
 let authToken = localStorage.getItem("authToken");
 
@@ -23,7 +24,8 @@ function getHeaders(includeJson = true) {
 }
 
 async function request(method, endpoint, data = null, { skipAuth = false } = {}) {
-  const url = `${API_URL}/${endpoint}`;
+  const normalizedEndpoint = endpoint.replace(/^\/+/, "");
+  const url = `${API_URL}/${normalizedEndpoint}`;
   const options = { method, headers: {} };
 
   if (method !== "GET" && method !== "HEAD") {
