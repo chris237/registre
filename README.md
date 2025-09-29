@@ -13,9 +13,12 @@ python app.py
 ```bash
 cd frontend
 npm install
+echo "VITE_API_URL=http://localhost:5000/api" > .env.local
 npm run dev
 ```
 Accéder à http://localhost:3000
+
+> L'application frontend interroge l'API via l'URL définie dans la variable `VITE_API_URL`. En production la valeur par défaut `/api` est utilisée, ce qui permet de passer par le proxy Apache défini dans `registre.conf`.
 
 ---
 
