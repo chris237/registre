@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SCI LemMarket - SQLite Edition</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="p-8 bg-gray-100">
+  <h1 class="text-3xl font-bold mb-4">SCI LemMarket</h1>
+
+  <section>
+    <h2 class="text-xl font-bold">Mandats</h2>
+    <form id="mandatForm" class="mb-4 space-x-2">
+      <input type="text" name="numero" placeholder="Numéro" class="border p-2" required />
+      <input type="text" name="typeMandat" placeholder="Type" class="border p-2" />
+      <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded">Ajouter</button>
+    </form>
+    <table class="min-w-full bg-white" id="mandatTable"><tbody></tbody></table>
+  </section>
+
+  <section class="mt-8">
+    <h2 class="text-xl font-bold">Transactions</h2>
+    <form id="transactionForm" class="mb-4 space-x-2">
+      <input type="text" name="numero" placeholder="Numéro" class="border p-2" required />
+      <input type="text" name="bien" placeholder="Bien" class="border p-2" />
+      <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded">Ajouter</button>
+    </form>
+    <table class="min-w-full bg-white" id="transactionTable"><tbody></tbody></table>
+  </section>
+
+  <section class="mt-8">
+    <h2 class="text-xl font-bold">Suivi</h2>
+    <form id="suiviForm" class="mb-4 space-x-2">
+      <input type="text" name="numeroMandat" placeholder="Mandat" class="border p-2" required />
+      <input type="text" name="action" placeholder="Action" class="border p-2" />
+      <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded">Ajouter</button>
+    </form>
+    <table class="min-w-full bg-white" id="suiviTable"><tbody></tbody></table>
+  </section>
+
+  <section class="mt-8">
+    <h2 class="text-xl font-bold">Recherche</h2>
+    <form id="rechercheForm" class="mb-4 space-x-2">
+      <input type="text" name="numero" placeholder="Numéro" class="border p-2" required />
+      <input type="text" name="client" placeholder="Client" class="border p-2" />
+      <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded">Ajouter</button>
+    </form>
+    <table class="min-w-full bg-white" id="rechercheTable"><tbody></tbody></table>
+  </section>
+
+  <section class="mt-8">
+    <h2 class="text-xl font-bold">Gestion locative</h2>
+    <form id="gestionForm" class="mb-4 space-x-2">
+      <input type="text" name="numeroBien" placeholder="Numéro Bien" class="border p-2" required />
+      <input type="text" name="locataire" placeholder="Locataire" class="border p-2" />
+      <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded">Ajouter</button>
+    </form>
+    <table class="min-w-full bg-white" id="gestionTable"><tbody></tbody></table>
+  </section>
+
+  <script type="module" src="./src/ui.js"></script>
+</body>
+</html>
