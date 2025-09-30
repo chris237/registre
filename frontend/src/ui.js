@@ -139,7 +139,9 @@ const registerConfigs = Object.entries(registerSchema).map(([name, fields]) => (
   fields
 }));
 
+const registerConfigMap = new Map(registerConfigs.map((config) => [config.name, config]));
 const registerControllers = new Map();
+const registerDataCache = new Map();
 let registersInitialized = false;
 let currentUser = null;
 
@@ -181,6 +183,136 @@ function hideStatus() {
   statusText.textContent = "";
 }
 
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, (char) => {
+    const entities = {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#039;"
+    };
+    return entities[char] || char;
+  });
+}
+
+function formatPrintValue(value) {
+  if (value === null || value === undefined) {
+    return "";
+  }
+  return escapeHtml(value);
+}
+
+function getRegisterLabels(name) {
+  const headers = registerHeaders[name] || [];
+  return headers.filter((header) => header !== "Actions");
+}
+
+function buildRegisterTitle(name) {
+  return registerTitles[name] || `Registre ${name}`;
+}
+
+function openPrintWindow(title, contentHtml) {
+  const printWindow = window.open("", "_blank", "noopener,noreferrer");
+  if (!printWindow) {
+    showStatus("Impossible d'ouvrir la fenêtre d'impression.", "error");
+    return;
+  }
+
+  const safeTitle = escapeHtml(title);
+  printWindow.document.write(`
+    <!DOCTYPE html>
+    <html lang="fr">
+      <head>
+        <meta charset="utf-8" />
+        <title>${safeTitle}</title>
+        <style>
+          body { font-family: 'Inter', Arial, sans-serif; margin: 24px; color: #111827; }
+          h1 { font-size: 24px; margin-bottom: 16px; }
+          table { width: 100%; border-collapse: collapse; margin-bottom: 24px; }
+          th, td { border: 1px solid #d1d5db; padding: 8px; text-align: left; font-size: 14px; }
+          th { background-color: #f3f4f6; font-weight: 600; }
+          tr:nth-child(even) td { background-color: #f9fafb; }
+        </style>
+      </head>
+      <body>
+        ${contentHtml}
+      </body>
+    </html>
+  `);
+  printWindow.document.close();
+  printWindow.focus();
+  printWindow.print();
+}
+
+function printRegister(registerName) {
+  const config = registerConfigMap.get(registerName);
+  if (!config) {
+    return;
+  }
+
+  const items = registerDataCache.get(registerName) || [];
+  const labels = getRegisterLabels(registerName);
+  const title = buildRegisterTitle(registerName);
+
+  const tableHeaders = labels.length
+    ? labels.map((label) => `<th>${escapeHtml(label)}</th>`).join("")
+    : config.fields.map((field) => `<th>${escapeHtml(field)}</th>`).join("");
+
+  const tableRows = items.length
+    ? items
+        .map((item) => {
+          const cells = config.fields
+            .map((field) => `<td>${formatPrintValue(item[field])}</td>`)
+            .join("");
+          return `<tr>${cells}</tr>`;
+        })
+        .join("")
+    : `<tr><td colspan="${Math.max(labels.length, config.fields.length, 1)}">Aucune donnée à imprimer.</td></tr>`;
+
+  const contentHtml = `
+    <h1>${escapeHtml(title)}</h1>
+    <table>
+      <thead>
+        <tr>${tableHeaders}</tr>
+      </thead>
+      <tbody>
+        ${tableRows}
+      </tbody>
+    </table>
+  `;
+
+  openPrintWindow(title, contentHtml);
+}
+
+function printRecord(registerName, item) {
+  const config = registerConfigMap.get(registerName);
+  if (!config) {
+    return;
+  }
+
+  const labels = getRegisterLabels(registerName);
+  const title = `${buildRegisterTitle(registerName)} - ${item[config.fields[0]] || "Enregistrement"}`;
+
+  const rows = config.fields
+    .map((field, index) => {
+      const label = labels[index] || field;
+      return `<tr><th>${escapeHtml(label)}</th><td>${formatPrintValue(item[field])}</td></tr>`;
+    })
+    .join("");
+
+  const contentHtml = `
+    <h1>${escapeHtml(buildRegisterTitle(registerName))}</h1>
+    <table>
+      <tbody>
+        ${rows}
+      </tbody>
+    </table>
+  `;
+
+  openPrintWindow(title, contentHtml);
+}
+
 function clearTables() {
   registerConfigs.forEach((config) => {
     const tableBody = document.querySelector(`#${config.tableId} tbody`);
@@ -188,6 +320,7 @@ function clearTables() {
       tableBody.innerHTML = "";
     }
   });
+  registerDataCache.clear();
 }
 
 function finalizeLogout(message = "") {
@@ -258,27 +391,48 @@ function setupForm(config) {
     }
     try {
       const items = await api.fetchData(config.endpoint);
+      registerDataCache.set(config.name, items);
       tableBody.innerHTML = "";
       items.forEach((item) => {
         const row = document.createElement("tr");
         row.className = "border-b last:border-b-0";
-        const cells = config.fields
-          .map((field) => `<td class="px-4 py-2 text-sm text-gray-700">${item[field] || ""}</td>`)
-          .join("");
-        row.innerHTML = `${cells}<td class="px-4 py-2 text-sm text-right"><button data-id="${item.id}" class="delete-btn text-red-600 hover:text-red-800 font-semibold">Supprimer</button></td>`;
-        tableBody.appendChild(row);
-      });
 
-      tableBody.querySelectorAll(".delete-btn").forEach((button) => {
-        button.addEventListener("click", async () => {
+        config.fields.forEach((field) => {
+          const cell = document.createElement("td");
+          cell.className = "px-4 py-2 text-sm text-gray-700";
+          cell.textContent = item[field] || "";
+          row.appendChild(cell);
+        });
+
+        const actionsCell = document.createElement("td");
+        actionsCell.className = "px-4 py-2 text-sm text-right";
+
+        const printButton = document.createElement("button");
+        printButton.type = "button";
+        printButton.className = "mr-3 text-blue-600 hover:text-blue-800 font-semibold";
+        printButton.textContent = "Imprimer";
+        printButton.addEventListener("click", () => {
+          printRecord(config.name, item);
+        });
+
+        const deleteButton = document.createElement("button");
+        deleteButton.type = "button";
+        deleteButton.className = "text-red-600 hover:text-red-800 font-semibold";
+        deleteButton.textContent = "Supprimer";
+        deleteButton.addEventListener("click", async () => {
           try {
-            await api.deleteData(config.endpoint, button.dataset.id);
+            await api.deleteData(config.endpoint, item.id);
             refresh();
             showStatus("Entrée supprimée avec succès.", "success");
           } catch (error) {
             handleAuthError(error);
           }
         });
+
+        actionsCell.appendChild(printButton);
+        actionsCell.appendChild(deleteButton);
+        row.appendChild(actionsCell);
+        tableBody.appendChild(row);
       });
     } catch (error) {
       handleAuthError(error);
@@ -437,6 +591,16 @@ if (createUserForm) {
     }
   });
 }
+
+document.querySelectorAll(".print-register-button").forEach((button) => {
+  const registerName = button.dataset.printRegister;
+  if (!registerName) {
+    return;
+  }
+  button.addEventListener("click", () => {
+    printRegister(registerName);
+  });
+});
 
 navButtons.forEach((button) => {
   button.addEventListener("click", () => {

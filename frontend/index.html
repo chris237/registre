@@ -114,7 +114,16 @@
       <section class="register-section" data-section="mandats">
         <div class="bg-white shadow-md rounded-lg p-6 space-y-6">
           <div>
-            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Registre des Mandats</h2>
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
+              <h2 class="text-2xl font-semibold text-gray-800">Registre des Mandats</h2>
+              <button
+                type="button"
+                class="print-register-button bg-gray-700 hover:bg-gray-900 text-white font-semibold px-4 py-2 rounded-md transition duration-300"
+                data-print-register="mandats"
+              >
+                Imprimer le registre
+              </button>
+            </div>
             <form id="mandatsForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <input type="text" name="numero" placeholder="Numéro" class="border rounded-md p-2" required />
               <input type="date" name="dateSignature" placeholder="Date de signature" class="border rounded-md p-2" />
@@ -165,7 +174,16 @@
       <section class="register-section hidden" data-section="transactions">
         <div class="bg-white shadow-md rounded-lg p-6 space-y-6">
           <div>
-            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Registre des Transactions</h2>
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
+              <h2 class="text-2xl font-semibold text-gray-800">Registre des Transactions</h2>
+              <button
+                type="button"
+                class="print-register-button bg-gray-700 hover:bg-gray-900 text-white font-semibold px-4 py-2 rounded-md transition duration-300"
+                data-print-register="transactions"
+              >
+                Imprimer le registre
+              </button>
+            </div>
             <form id="transactionsForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <input type="text" name="numeroTransaction" placeholder="Numéro de transaction" class="border rounded-md p-2" required />
               <input type="date" name="dateTransaction" placeholder="Date" class="border rounded-md p-2" />
@@ -208,7 +226,16 @@
       <section class="register-section hidden" data-section="suivi">
         <div class="bg-white shadow-md rounded-lg p-6 space-y-6">
           <div>
-            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Registre de Suivi</h2>
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
+              <h2 class="text-2xl font-semibold text-gray-800">Registre de Suivi</h2>
+              <button
+                type="button"
+                class="print-register-button bg-gray-700 hover:bg-gray-900 text-white font-semibold px-4 py-2 rounded-md transition duration-300"
+                data-print-register="suivi"
+              >
+                Imprimer le registre
+              </button>
+            </div>
             <form id="suiviForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <input type="text" name="numeroMandat" placeholder="Référence mandat" class="border rounded-md p-2" required />
               <input type="date" name="dateSuivi" placeholder="Date de suivi" class="border rounded-md p-2" />
@@ -247,7 +274,16 @@
       <section class="register-section hidden" data-section="gestion_locative">
         <div class="bg-white shadow-md rounded-lg p-6 space-y-6">
           <div>
-            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Registre de Gestion Locative</h2>
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
+              <h2 class="text-2xl font-semibold text-gray-800">Registre de Gestion Locative</h2>
+              <button
+                type="button"
+                class="print-register-button bg-gray-700 hover:bg-gray-900 text-white font-semibold px-4 py-2 rounded-md transition duration-300"
+                data-print-register="gestion_locative"
+              >
+                Imprimer le registre
+              </button>
+            </div>
             <form id="gestion_locativeForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <input type="text" name="numeroBien" placeholder="Référence bien" class="border rounded-md p-2" required />
               <textarea name="adresse" placeholder="Adresse" class="border rounded-md p-2 md:col-span-2" rows="2"></textarea>
@@ -290,7 +326,16 @@
       <section class="register-section hidden" data-section="recherche">
         <div class="bg-white shadow-md rounded-lg p-6 space-y-6">
           <div>
-            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Registre de Recherche</h2>
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
+              <h2 class="text-2xl font-semibold text-gray-800">Registre de Recherche</h2>
+              <button
+                type="button"
+                class="print-register-button bg-gray-700 hover:bg-gray-900 text-white font-semibold px-4 py-2 rounded-md transition duration-300"
+                data-print-register="recherche"
+              >
+                Imprimer le registre
+              </button>
+            </div>
             <form id="rechercheForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <input type="text" name="numeroDemande" placeholder="Numéro de demande" class="border rounded-md p-2" required />
               <input type="date" name="dateDemande" placeholder="Date de demande" class="border rounded-md p-2" />
