@@ -12,7 +12,20 @@ from sqlalchemy import text
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
-ALLOWED_ORIGINS = {"http://localhost:5173", "http://127.0.0.1:5173"}
+
+
+def _parse_origins(raw_origins: str) -> set[str]:
+    return {origin.strip() for origin in raw_origins.split(',') if origin.strip()}
+
+
+_default_origins = {
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+}
+
+ALLOWED_ORIGINS = _parse_origins(os.getenv("ALLOWED_ORIGINS", "")) or _default_origins
 
 CORS(
     app,
