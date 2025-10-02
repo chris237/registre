@@ -15,4 +15,5 @@ services:
       - "127.0.0.1:3000:3000"
     depends_on:
       - backend
+    command: ["nginx", "-g", "daemon off;"]
     restart: unless-stopped

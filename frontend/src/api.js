@@ -94,6 +94,10 @@ async function createUser(data) {
   return request("POST", "users", data);
 }
 
+async function listUsers() {
+  return request("GET", "users");
+}
+
 export const api = {
   fetchData,
   postData,
@@ -102,6 +106,7 @@ export const api = {
   logout,
   me,
   createUser,
+  listUsers,
   setAuthToken,
   get token() {
     return authToken;

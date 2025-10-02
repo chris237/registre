@@ -8,6 +8,7 @@ import {
   LogOut,
   Plus,
   Printer,
+  RefreshCw,
   Search,
   Trash2,
   TrendingUp,
@@ -602,6 +603,30 @@ const AdminView = ({ onStatus, onUnauthorized }) => {
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('agent');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [users, setUsers] = useState([]);
+  const [isLoadingUsers, setIsLoadingUsers] = useState(false);
+  const [usersError, setUsersError] = useState(null);
+
+  const loadUsers = useCallback(async () => {
+    setIsLoadingUsers(true);
+    setUsersError(null);
+    try {
+      const data = await api.listUsers();
+      setUsers(Array.isArray(data) ? data : []);
+    } catch (err) {
+      if (err.status === 401) {
+        onUnauthorized();
+        return;
+      }
+      setUsersError(err.message || 'Impossible de charger les utilisateurs.');
+    } finally {
+      setIsLoadingUsers(false);
+    }
+  }, [onUnauthorized]);
+
+  useEffect(() => {
+    loadUsers();
+  }, [loadUsers]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -612,6 +637,7 @@ const AdminView = ({ onStatus, onUnauthorized }) => {
       setPassword('');
       setRole('agent');
       onStatus({ type: 'success', message: "Nouvel utilisateur créé avec succès." });
+      loadUsers();
     } catch (err) {
       if (err.status === 401) {
         onUnauthorized();
@@ -678,6 +704,67 @@ const AdminView = ({ onStatus, onUnauthorized }) => {
             </button>
           </div>
         </form>
+      </div>
+      <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-6 space-y-4">
+        <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+          <div>
+            <h3 className="text-xl font-semibold text-gray-900">Utilisateurs existants</h3>
+            <p className="text-sm text-gray-500">Consultez les comptes actuellement actifs.</p>
+          </div>
+          <button
+            onClick={loadUsers}
+            disabled={isLoadingUsers}
+            className="inline-flex items-center self-start rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-70"
+          >
+            {isLoadingUsers ? (
+              <Loader className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <RefreshCw className="mr-2 h-4 w-4" />
+            )}
+            Rafraîchir
+          </button>
+        </div>
+        {usersError && (
+          <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+            <div className="flex items-center justify-between gap-3">
+              <span>{usersError}</span>
+              <button
+                onClick={loadUsers}
+                className="font-semibold text-red-700 underline-offset-2 hover:underline"
+              >
+                Réessayer
+              </button>
+            </div>
+          </div>
+        )}
+        {isLoadingUsers ? (
+          <LoadingState message="Chargement des utilisateurs..." />
+        ) : users.length ? (
+          <div className="overflow-hidden rounded-lg border border-gray-200">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
+                    Email
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
+                    Rôle
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200 bg-white">
+                {users.map((user) => (
+                  <tr key={user.id} className="transition hover:bg-green-50">
+                    <td className="px-6 py-4 text-sm font-medium text-gray-900">{user.email}</td>
+                    <td className="px-6 py-4 text-sm text-gray-600 capitalize">{user.role}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <p className="text-sm text-gray-500">Aucun utilisateur enregistré pour le moment.</p>
+        )}
       </div>
     </div>
   );

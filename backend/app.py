@@ -374,6 +374,28 @@ def logout():
     return '', 204
 
 
+@app.route('/api/users', methods=['GET'])
+@login_required
+def list_users():
+    if g.current_user.role != 'admin':
+        return error_response('Admin privileges required', 403)
+
+    users = (
+        User.query
+        .order_by(User.email.asc())
+        .all()
+    )
+
+    return jsonify([
+        {
+            'id': user.id,
+            'email': user.email,
+            'role': user.role,
+        }
+        for user in users
+    ])
+
+
 @app.route('/api/users', methods=['POST'])
 @login_required
 def create_user():
