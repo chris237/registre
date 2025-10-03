@@ -22,21 +22,13 @@ const registerDefinitions = {
     icon: Briefcase,
     endpoint: 'mandats',
     fields: [
-      { name: 'numero', label: 'N° Mandat', required: true, placeholder: 'Ex. M-2024-001' },
-      { name: 'dateSignature', label: 'Date de signature', type: 'date' },
+      { name: 'referenceMandat', label: 'Référence mandat', required: true, placeholder: 'Ex. M-2024-001' },
       {
         name: 'typeMandat',
         label: 'Type de mandat',
         type: 'select',
         placeholder: 'Sélectionnez un type',
-        options: ['Simple', 'Exclusif', 'Semi-exclusif', 'Recherche', 'Autre']
-      },
-      {
-        name: 'statutMandat',
-        label: 'Statut du mandat',
-        type: 'select',
-        placeholder: 'Choisir un statut',
-        options: ['En préparation', 'En cours', 'Suspendu', 'Résilié', 'Finalisé']
+        options: ['Vente Simple', 'Vente Exclusif', 'Location Simple', 'Location Exclusif', 'Autre']
       },
       {
         name: 'typeTransaction',
@@ -45,36 +37,79 @@ const registerDefinitions = {
         placeholder: 'Sélectionnez une transaction',
         options: ['Vente', 'Achat', 'Location', 'Gestion', 'Autre']
       },
-      { name: 'proprietaire', label: 'Propriétaire', placeholder: 'Nom complet du propriétaire' },
       {
-        name: 'adresse',
-        label: 'Adresse',
-        type: 'textarea',
-        fullWidth: true,
-        placeholder: 'Adresse complète du bien'
+        name: 'typeBien',
+        label: 'Type de bien',
+        type: 'select',
+        placeholder: 'Sélectionnez un type de bien',
+        options: ['Maison', 'Appartement', 'Terrain', 'Bureau', 'Local commercial', 'Autre']
       },
       {
-        name: 'caracteristiques',
-        label: 'Caractéristiques',
+        name: 'adresseBien',
+        label: 'Adresse complète du bien',
         type: 'textarea',
         fullWidth: true,
-        placeholder: 'Surface, pièces, prestations...'
+        placeholder: 'Adresse postale complète et précisions d’accès'
       },
-      { name: 'prixSouhaite', label: 'Prix souhaité', placeholder: 'Ex. 250 000 €' },
-      { name: 'commission', label: 'Commission', placeholder: 'Ex. 5 %' },
-      { name: 'validite', label: 'Validité', placeholder: 'Durée ou date de fin' },
-      { name: 'dateFinalisation', label: 'Date de finalisation', type: 'date' },
-      { name: 'acquereur', label: 'Acquéreur', placeholder: 'Nom de l’acquéreur' }
+      { name: 'surfaceM2', label: 'Surface (m²)', type: 'number', placeholder: 'Ex. 125' },
+      { name: 'nbPieces', label: 'Nombre de pièces', type: 'number', placeholder: 'Ex. 5' },
+      {
+        name: 'dpeClassement',
+        label: 'Classement DPE',
+        type: 'select',
+        options: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'Non renseigné']
+      },
+      { name: 'prixDemande', label: 'Prix demandé (FCFA)', type: 'number', placeholder: 'Ex. 150000000' },
+      { name: 'honorairePourcent', label: 'Honoraires agence (%)', type: 'number', placeholder: 'Ex. 5' },
+      { name: 'tvaApplicable', label: 'TVA applicable (%)', type: 'number', placeholder: 'Ex. 18' },
+      { name: 'proprietaireNom', label: 'Propriétaire / vendeur', required: true, placeholder: 'Nom et prénom du propriétaire' },
+      {
+        name: 'proprietaireCoordonnees',
+        label: 'Coordonnées propriétaire / vendeur',
+        type: 'textarea',
+        fullWidth: true,
+        placeholder: 'Téléphone, email, adresse postale...'
+      },
+      {
+        name: 'clientVendeurInfos',
+        label: 'Contacts complémentaires vendeur',
+        type: 'textarea',
+        fullWidth: true,
+        placeholder: 'Mandataire, co-indivisaire, représentant légal...'
+      },
+      {
+        name: 'clientAcheteurInfos',
+        label: 'Client acquéreur / locataire (coordonnées)',
+        type: 'textarea',
+        fullWidth: true,
+        placeholder: 'Nom, téléphone, email des prospects intéressés'
+      },
+      { name: 'dateDebut', label: 'Date de début de mandat', type: 'date' },
+      { name: 'dateEcheance', label: "Date d'échéance", type: 'date' },
+      { name: 'agentResponsable', label: 'Agent responsable', placeholder: 'Nom de l’agent en charge' },
+      {
+        name: 'descriptionBien',
+        label: 'Description du bien',
+        type: 'textarea',
+        fullWidth: true,
+        placeholder: 'Résumé des atouts du bien, environnement, travaux réalisés...'
+      },
+      {
+        name: 'notesMandat',
+        label: 'Notes internes / suivi mandat',
+        type: 'textarea',
+        fullWidth: true,
+        placeholder: 'Clauses spécifiques, points de vigilance, instructions propriétaires...'
+      }
     ],
     columns: [
-      { name: 'numero', label: 'N° Mandat' },
-      { name: 'dateSignature', label: 'Date signature' },
+      { name: 'referenceMandat', label: 'Référence mandat' },
       { name: 'typeMandat', label: 'Type' },
-      { name: 'statutMandat', label: 'Statut' },
-      { name: 'typeTransaction', label: 'Transaction' },
-      { name: 'proprietaire', label: 'Propriétaire' },
-      { name: 'adresse', label: 'Adresse', wrap: true },
-      { name: 'prixSouhaite', label: 'Prix souhaité' }
+      { name: 'typeBien', label: 'Bien' },
+      { name: 'proprietaireNom', label: 'Propriétaire / vendeur', wrap: true },
+      { name: 'agentResponsable', label: 'Agent' },
+      { name: 'prixDemande', label: 'Prix demandé (FCFA)' },
+      { name: 'dateEcheance', label: 'Échéance' }
     ]
   },
   suivi: {
@@ -82,39 +117,46 @@ const registerDefinitions = {
     icon: TrendingUp,
     endpoint: 'suivi',
     fields: [
-      { name: 'numeroMandat', label: 'Réf. Mandat', required: true, placeholder: 'Mandat concerné' },
-      { name: 'dateSuivi', label: "Date de l'action", type: 'date' },
+      { name: 'referenceMandat', label: 'Référence mandat', required: true, placeholder: 'Mandat concerné' },
+      { name: 'dateAction', label: "Date de l'action", type: 'date' },
       {
-        name: 'action',
+        name: 'typeAction',
         label: 'Action réalisée',
         type: 'select',
         placeholder: 'Sélectionnez une action',
-        options: ['Appel téléphonique', 'Email', 'Visite', 'Relance', 'Autre']
+        options: ['Visite', 'Appel téléphonique', 'Email', 'Offre reçue', 'Relance propriétaire', 'Campagne marketing', 'Autre']
       },
-      { name: 'contact', label: 'Contact associé', placeholder: 'Nom du contact' },
       {
-        name: 'resultat',
-        label: 'Résultat',
+        name: 'intensiteAction',
+        label: "Intensité de l'action",
+        type: 'select',
+        options: ['Faible', 'Moyenne', 'Forte']
+      },
+      { name: 'contactClient', label: 'Contact client', placeholder: 'Nom du contact impliqué' },
+      {
+        name: 'details',
+        label: 'Détails / commentaires',
         type: 'textarea',
         fullWidth: true,
-        placeholder: 'Compte-rendu de l’action'
+        placeholder: 'Résultat de la relance, feedback client, points à retenir...'
       },
+      { name: 'agent', label: 'Agent enregistreur', placeholder: 'Agent ayant réalisé l’action' },
       {
         name: 'prochaineEtape',
-        label: 'Prochaine étape',
+        label: 'Prochaine étape planifiée',
         type: 'textarea',
         fullWidth: true,
-        placeholder: 'Actions à prévoir'
+        placeholder: 'Action à prévoir et objectifs associés'
       },
-      { name: 'datePrevue', label: 'Date prévue', type: 'date' }
+      { name: 'dateProchaineAction', label: 'Date prochaine action', type: 'date' }
     ],
     columns: [
-      { name: 'numeroMandat', label: 'Réf. Mandat' },
-      { name: 'dateSuivi', label: 'Date' },
-      { name: 'action', label: 'Action' },
-      { name: 'contact', label: 'Contact' },
-      { name: 'resultat', label: 'Résultat', wrap: true },
-      { name: 'prochaineEtape', label: 'Prochaine étape', wrap: true }
+      { name: 'referenceMandat', label: 'Référence mandat' },
+      { name: 'dateAction', label: 'Date' },
+      { name: 'typeAction', label: 'Action' },
+      { name: 'intensiteAction', label: 'Intensité' },
+      { name: 'contactClient', label: 'Contact client' },
+      { name: 'agent', label: 'Agent' }
     ]
   },
   transactions: {
@@ -123,35 +165,49 @@ const registerDefinitions = {
     endpoint: 'transactions',
     fields: [
       { name: 'numeroTransaction', label: 'N° Transaction', required: true, placeholder: 'Ex. T-2024-001' },
-      { name: 'dateTransaction', label: 'Date', type: 'date' },
-      { name: 'mandatRef', label: 'Réf. Mandat', placeholder: 'Mandat lié' },
+      { name: 'referenceMandat', label: 'Référence mandat', required: true, placeholder: 'Mandat lié' },
       {
         name: 'typeTransaction',
         label: 'Type de transaction',
         type: 'select',
         placeholder: 'Sélectionnez un type',
-        options: ['Vente', 'Achat', 'Location', 'Cession', 'Autre']
+        options: ['Vente définitive', 'Location signée', 'Compromis', 'Promesse', 'Autre']
       },
-      { name: 'bien', label: 'Bien concerné', placeholder: 'Appartement, maison...' },
-      { name: 'prix', label: 'Prix', placeholder: 'Montant total' },
-      { name: 'commissionTotale', label: 'Commission totale', placeholder: 'Montant de la commission' },
-      { name: 'client', label: 'Client', placeholder: 'Nom du client' },
+      { name: 'dateSignature', label: 'Date de signature / compromis', type: 'date' },
+      { name: 'clientVendeur', label: 'Client vendeur / bailleur', placeholder: 'Nom complet du vendeur' },
+      { name: 'acquereurLocataire', label: 'Acquéreur / locataire', required: true, placeholder: 'Nom complet de la contrepartie' },
+      { name: 'notaire', label: 'Notaire (si vente)', placeholder: 'Étude notariale en charge' },
+      { name: 'prixFinal', label: 'Prix final ou loyer (FCFA)', type: 'number', placeholder: 'Montant conclu' },
+      { name: 'commissionHT', label: 'Commission agence HT (FCFA)', type: 'number', placeholder: 'Montant HT' },
+      { name: 'montantTVA', label: 'Montant TVA (FCFA)', type: 'number', placeholder: 'Montant de TVA' },
       {
-        name: 'observations',
-        label: 'Observations',
+        name: 'conditionsSusp',
+        label: 'Conditions suspensives',
+        type: 'select',
+        options: ['Oui', 'Non']
+      },
+      {
+        name: 'statutReglement',
+        label: 'Statut règlement commission',
+        type: 'select',
+        options: ['En attente', 'Partiellement réglée', 'Réglée']
+      },
+      {
+        name: 'notesTransaction',
+        label: 'Notes sur la transaction',
         type: 'textarea',
         fullWidth: true,
-        placeholder: 'Informations complémentaires'
+        placeholder: 'Conditions particulières, échéancier de paiement, observations diverses'
       }
     ],
     columns: [
       { name: 'numeroTransaction', label: 'N° Transaction' },
-      { name: 'dateTransaction', label: 'Date' },
-      { name: 'mandatRef', label: 'Réf. Mandat' },
+      { name: 'referenceMandat', label: 'Référence mandat' },
       { name: 'typeTransaction', label: 'Type' },
-      { name: 'bien', label: 'Bien', wrap: true },
-      { name: 'prix', label: 'Prix' },
-      { name: 'commissionTotale', label: 'Commission' }
+      { name: 'clientVendeur', label: 'Vendeur / bailleur', wrap: true },
+      { name: 'acquereurLocataire', label: 'Acquéreur / locataire', wrap: true },
+      { name: 'prixFinal', label: 'Prix final (FCFA)' },
+      { name: 'statutReglement', label: 'Règlement commission' }
     ]
   },
   gestion_locative: {
@@ -159,41 +215,60 @@ const registerDefinitions = {
     icon: Home,
     endpoint: 'gestion',
     fields: [
-      { name: 'numeroBien', label: 'Réf. Bien', required: true, placeholder: 'Ex. B-2024-001' },
+      { name: 'referenceMandat', label: 'Référence mandat', placeholder: 'Mandat de gestion lié' },
+      { name: 'numeroBien', label: 'Référence bien', required: true, placeholder: 'Ex. B-2024-001' },
       {
-        name: 'adresse',
-        label: 'Adresse',
+        name: 'adresseBien',
+        label: 'Adresse complète du bien',
         type: 'textarea',
         fullWidth: true,
-        placeholder: 'Adresse complète du bien'
+        placeholder: 'Adresse, étage, accès, particularités...'
       },
-      { name: 'proprietaire', label: 'Propriétaire', placeholder: 'Nom du bailleur' },
-      { name: 'locataire', label: 'Locataire', placeholder: 'Nom du locataire' },
-      { name: 'dateDebutBail', label: 'Début du bail', type: 'date' },
-      { name: 'loyer', label: 'Loyer', placeholder: 'Montant mensuel' },
+      { name: 'proprietaireNom', label: 'Propriétaire / bailleur', required: true },
       {
-        name: 'statutLoyer',
-        label: 'Statut du loyer',
+        name: 'proprietaireCoordonnees',
+        label: 'Coordonnées propriétaire',
+        type: 'textarea',
+        fullWidth: true,
+        placeholder: 'Téléphone, email, adresse de correspondance'
+      },
+      { name: 'locataireNom', label: 'Locataire', required: true },
+      {
+        name: 'locataireCoordonnees',
+        label: 'Coordonnées locataire',
+        type: 'textarea',
+        fullWidth: true,
+        placeholder: 'Téléphone, email, adresse de facturation'
+      },
+      { name: 'debutBail', label: 'Début du bail', type: 'date' },
+      { name: 'finBail', label: 'Fin du bail', type: 'date' },
+      { name: 'montantLoyerBase', label: 'Loyer hors charges (FCFA)', type: 'number' },
+      { name: 'montantCharges', label: 'Charges mensuelles (FCFA)', type: 'number' },
+      { name: 'depotGarantie', label: 'Dépôt de garantie (FCFA)', type: 'number' },
+      { name: 'irl', label: 'Indice IRL appliqué', placeholder: 'Indice de référence des loyers' },
+      { name: 'dateProchaineIndexation', label: 'Prochaine indexation', type: 'date' },
+      {
+        name: 'etatPaiement',
+        label: 'Statut paiement',
         type: 'select',
-        placeholder: 'Sélectionnez un statut',
-        options: ['Payé', 'Partiellement payé', 'En retard', 'Impayé']
+        options: ['À jour', 'En retard', 'Impayé']
       },
-      { name: 'datePaiement', label: 'Date de paiement', type: 'date' },
+      { name: 'datePaiement', label: 'Date dernier paiement', type: 'date' },
       {
-        name: 'observations',
-        label: 'Observations',
+        name: 'notesIncident',
+        label: 'Incidents / travaux',
         type: 'textarea',
         fullWidth: true,
-        placeholder: 'Notes sur le bail ou le locataire'
+        placeholder: 'Retards, réparations, communications avec le locataire...'
       }
     ],
     columns: [
-      { name: 'numeroBien', label: 'Réf. Bien' },
-      { name: 'locataire', label: 'Locataire' },
-      { name: 'proprietaire', label: 'Propriétaire' },
-      { name: 'dateDebutBail', label: 'Début bail' },
-      { name: 'loyer', label: 'Loyer' },
-      { name: 'statutLoyer', label: 'Statut du loyer' }
+      { name: 'numeroBien', label: 'Référence bien' },
+      { name: 'referenceMandat', label: 'Mandat lié' },
+      { name: 'locataireNom', label: 'Locataire' },
+      { name: 'proprietaireNom', label: 'Propriétaire', wrap: true },
+      { name: 'montantLoyerBase', label: 'Loyer HC (FCFA)' },
+      { name: 'etatPaiement', label: 'Statut paiement' }
     ]
   },
   recherche: {
@@ -202,45 +277,67 @@ const registerDefinitions = {
     endpoint: 'recherche',
     fields: [
       { name: 'numeroDemande', label: 'N° Demande', required: true, placeholder: 'Ex. D-2024-001' },
-      { name: 'dateDemande', label: 'Date', type: 'date' },
-      { name: 'client', label: 'Client', placeholder: 'Nom du client' },
+      { name: 'dateDemande', label: 'Date de la demande', type: 'date' },
+      { name: 'clientNom', label: 'Nom complet du client', required: true },
+      { name: 'telephone', label: 'Téléphone', required: true, placeholder: 'Ex. +225 00 00 00 00' },
       {
-        name: 'typeBien',
-        label: 'Type de bien',
+        name: 'typeRecherche',
+        label: 'Type de recherche',
         type: 'select',
-        placeholder: 'Sélectionnez un type de bien',
-        options: ['Appartement', 'Maison', 'Terrain', 'Local commercial', 'Bureau', 'Autre']
+        placeholder: 'Sélectionnez un type',
+        options: ['Achat résidence principale', 'Achat investissement', 'Location']
       },
-      { name: 'budget', label: 'Budget', placeholder: 'Montant estimé' },
+      { name: 'budgetMin', label: 'Budget minimum (FCFA)', type: 'number' },
+      { name: 'budgetMax', label: 'Budget maximum (FCFA)', type: 'number' },
       {
-        name: 'criteres',
-        label: 'Critères',
+        name: 'secteurGeographique',
+        label: 'Secteurs géographiques recherchés',
         type: 'textarea',
         fullWidth: true,
-        placeholder: 'Surface, localisation, prestations...'
+        placeholder: 'Quartiers, villes, zones prioritaires'
+      },
+      {
+        name: 'delaiSouhaite',
+        label: 'Délai souhaité',
+        type: 'select',
+        options: ['Immédiat (< 3 mois)', 'Moyen terme (3-6 mois)', 'Long terme (> 6 mois)']
+      },
+      {
+        name: 'motivations',
+        label: 'Motivations / urgence',
+        type: 'textarea',
+        fullWidth: true,
+        placeholder: 'Projet de vie, investissement, mobilité professionnelle...'
+      },
+      {
+        name: 'criteresSpecifiques',
+        label: 'Critères spécifiques',
+        type: 'textarea',
+        fullWidth: true,
+        placeholder: 'Surface minimale, nombre de pièces, prestations attendues...'
       },
       {
         name: 'biensProposes',
-        label: 'Biens proposés',
+        label: 'Biens déjà proposés',
         type: 'textarea',
         fullWidth: true,
-        placeholder: 'Biens envoyés au client'
+        placeholder: 'Historique des propositions envoyées au client'
       },
       {
         name: 'statutDemande',
-        label: 'Statut',
+        label: 'Statut de la demande',
         type: 'select',
-        placeholder: 'Sélectionnez un statut',
-        options: ['En attente', 'En recherche', 'Proposition envoyée', 'Clôturée', 'Annulée']
-      }
+        options: ['En attente', 'En recherche active', 'Proposition envoyée', 'Clôturée', 'Annulée']
+      },
+      { name: 'agentSuivi', label: 'Agent en charge', placeholder: 'Conseiller responsable du dossier' }
     ],
     columns: [
       { name: 'numeroDemande', label: 'N° Demande' },
-      { name: 'dateDemande', label: 'Date' },
-      { name: 'client', label: 'Client' },
-      { name: 'typeBien', label: 'Type de bien' },
-      { name: 'budget', label: 'Budget' },
-      { name: 'statutDemande', label: 'Statut' }
+      { name: 'clientNom', label: 'Client' },
+      { name: 'telephone', label: 'Téléphone' },
+      { name: 'typeRecherche', label: 'Type de recherche' },
+      { name: 'budgetMax', label: 'Budget max (FCFA)' },
+      { name: 'agentSuivi', label: 'Agent' }
     ]
   }
 };
