@@ -63,7 +63,7 @@ class User(db.Model):
 
 class Mandat(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    referenceMandat = db.Column('numero', db.String(50), nullable=False)
+    referenceMandat = db.Column('numero', db.String(50), nullable=False, unique=True)
     dateDebut = db.Column('dateSignature', db.String(50))
     dateEcheance = db.Column(db.String(50))
     typeMandat = db.Column(db.String(50))
@@ -85,12 +85,39 @@ class Mandat(db.Model):
     notesMandat = db.Column('caracteristiques', db.Text)
     descriptionBien = db.Column(db.Text)
 
+    transactions = db.relationship(
+        'Transaction',
+        back_populates='mandat',
+        cascade='all, delete-orphan',
+        passive_deletes=True,
+        single_parent=True,
+    )
+    suivis = db.relationship(
+        'Suivi',
+        back_populates='mandat',
+        cascade='all, delete-orphan',
+        passive_deletes=True,
+        single_parent=True,
+    )
+    gestions_locatives = db.relationship(
+        'GestionLocative',
+        back_populates='mandat',
+        cascade='all, delete-orphan',
+        passive_deletes=True,
+        single_parent=True,
+    )
+
 
 class Transaction(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     numeroTransaction = db.Column(db.String(50), nullable=False)
     dateSignature = db.Column('dateTransaction', db.String(50))
-    referenceMandat = db.Column('mandatRef', db.String(50))
+    referenceMandat = db.Column(
+        'mandatRef',
+        db.String(50),
+        db.ForeignKey('mandat.numero', ondelete='CASCADE'),
+        nullable=False,
+    )
     typeTransaction = db.Column(db.String(50))
     clientVendeur = db.Column(db.String(120))
     acquereurLocataire = db.Column('client', db.String(120))
@@ -102,10 +129,17 @@ class Transaction(db.Model):
     statutReglement = db.Column(db.String(50))
     notesTransaction = db.Column('observations', db.Text)
 
+    mandat = db.relationship('Mandat', back_populates='transactions')
+
 
 class Suivi(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    referenceMandat = db.Column('numeroMandat', db.String(50), nullable=False)
+    referenceMandat = db.Column(
+        'numeroMandat',
+        db.String(50),
+        db.ForeignKey('mandat.numero', ondelete='CASCADE'),
+        nullable=False,
+    )
     dateAction = db.Column('dateSuivi', db.String(50))
     typeAction = db.Column('action', db.String(100))
     contactClient = db.Column('contact', db.String(120))
@@ -114,6 +148,8 @@ class Suivi(db.Model):
     prochaineEtape = db.Column(db.String(200))
     dateProchaineAction = db.Column('datePrevue', db.String(50))
     agent = db.Column(db.String(120))
+
+    mandat = db.relationship('Mandat', back_populates='suivis')
 
 
 class Recherche(db.Model):
@@ -136,7 +172,11 @@ class Recherche(db.Model):
 
 class GestionLocative(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    referenceMandat = db.Column(db.String(50))
+    referenceMandat = db.Column(
+        db.String(50),
+        db.ForeignKey('mandat.numero', ondelete='CASCADE'),
+        nullable=False,
+    )
     numeroBien = db.Column(db.String(50), nullable=False)
     adresseBien = db.Column('adresse', db.Text)
     proprietaireNom = db.Column('proprietaire', db.String(120))
@@ -153,6 +193,8 @@ class GestionLocative(db.Model):
     etatPaiement = db.Column('statutLoyer', db.String(100))
     datePaiement = db.Column(db.String(50))
     notesIncident = db.Column('observations', db.Text)
+
+    mandat = db.relationship('Mandat', back_populates='gestions_locatives')
 
 # ---- HELPERS ----
 def ensure_default_admin():
@@ -275,7 +317,7 @@ def ensure_schema():
 
 
 def to_dict(obj):
-    return {c.name: getattr(obj, c.name) for c in obj.__table__.columns}
+    return {c.key: getattr(obj, c.key) for c in obj.__table__.columns}
 
 
 def error_response(message, status):
