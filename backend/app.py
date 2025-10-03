@@ -318,7 +318,8 @@ def ensure_schema():
 
 
 def to_dict(obj):
-    return {c.key: getattr(obj, c.key) for c in obj.__table__.columns}
+    mapper = inspect(obj.__class__)
+    return {attr.key: getattr(obj, attr.key) for attr in mapper.column_attrs}
 
 
 def error_response(message, status):
