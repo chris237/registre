@@ -22,19 +22,49 @@ const registerDefinitions = {
     icon: Briefcase,
     endpoint: 'mandats',
     fields: [
-      { name: 'numero', label: 'N° Mandat', required: true },
+      { name: 'numero', label: 'N° Mandat', required: true, placeholder: 'Ex. M-2024-001' },
       { name: 'dateSignature', label: 'Date de signature', type: 'date' },
-      { name: 'typeMandat', label: 'Type de mandat' },
-      { name: 'statutMandat', label: 'Statut du mandat' },
-      { name: 'typeTransaction', label: 'Type de transaction' },
-      { name: 'proprietaire', label: 'Propriétaire' },
-      { name: 'adresse', label: 'Adresse', type: 'textarea', fullWidth: true },
-      { name: 'caracteristiques', label: 'Caractéristiques', type: 'textarea', fullWidth: true },
-      { name: 'prixSouhaite', label: 'Prix souhaité' },
-      { name: 'commission', label: 'Commission' },
-      { name: 'validite', label: 'Validité' },
+      {
+        name: 'typeMandat',
+        label: 'Type de mandat',
+        type: 'select',
+        placeholder: 'Sélectionnez un type',
+        options: ['Simple', 'Exclusif', 'Semi-exclusif', 'Recherche', 'Autre']
+      },
+      {
+        name: 'statutMandat',
+        label: 'Statut du mandat',
+        type: 'select',
+        placeholder: 'Choisir un statut',
+        options: ['En préparation', 'En cours', 'Suspendu', 'Résilié', 'Finalisé']
+      },
+      {
+        name: 'typeTransaction',
+        label: 'Type de transaction',
+        type: 'select',
+        placeholder: 'Sélectionnez une transaction',
+        options: ['Vente', 'Achat', 'Location', 'Gestion', 'Autre']
+      },
+      { name: 'proprietaire', label: 'Propriétaire', placeholder: 'Nom complet du propriétaire' },
+      {
+        name: 'adresse',
+        label: 'Adresse',
+        type: 'textarea',
+        fullWidth: true,
+        placeholder: 'Adresse complète du bien'
+      },
+      {
+        name: 'caracteristiques',
+        label: 'Caractéristiques',
+        type: 'textarea',
+        fullWidth: true,
+        placeholder: 'Surface, pièces, prestations...'
+      },
+      { name: 'prixSouhaite', label: 'Prix souhaité', placeholder: 'Ex. 250 000 €' },
+      { name: 'commission', label: 'Commission', placeholder: 'Ex. 5 %' },
+      { name: 'validite', label: 'Validité', placeholder: 'Durée ou date de fin' },
       { name: 'dateFinalisation', label: 'Date de finalisation', type: 'date' },
-      { name: 'acquereur', label: 'Acquéreur' }
+      { name: 'acquereur', label: 'Acquéreur', placeholder: 'Nom de l’acquéreur' }
     ],
     columns: [
       { name: 'numero', label: 'N° Mandat' },
@@ -52,12 +82,30 @@ const registerDefinitions = {
     icon: TrendingUp,
     endpoint: 'suivi',
     fields: [
-      { name: 'numeroMandat', label: 'Réf. Mandat', required: true },
+      { name: 'numeroMandat', label: 'Réf. Mandat', required: true, placeholder: 'Mandat concerné' },
       { name: 'dateSuivi', label: "Date de l'action", type: 'date' },
-      { name: 'action', label: 'Action réalisée' },
-      { name: 'contact', label: 'Contact associé' },
-      { name: 'resultat', label: 'Résultat', type: 'textarea', fullWidth: true },
-      { name: 'prochaineEtape', label: 'Prochaine étape', type: 'textarea', fullWidth: true },
+      {
+        name: 'action',
+        label: 'Action réalisée',
+        type: 'select',
+        placeholder: 'Sélectionnez une action',
+        options: ['Appel téléphonique', 'Email', 'Visite', 'Relance', 'Autre']
+      },
+      { name: 'contact', label: 'Contact associé', placeholder: 'Nom du contact' },
+      {
+        name: 'resultat',
+        label: 'Résultat',
+        type: 'textarea',
+        fullWidth: true,
+        placeholder: 'Compte-rendu de l’action'
+      },
+      {
+        name: 'prochaineEtape',
+        label: 'Prochaine étape',
+        type: 'textarea',
+        fullWidth: true,
+        placeholder: 'Actions à prévoir'
+      },
       { name: 'datePrevue', label: 'Date prévue', type: 'date' }
     ],
     columns: [
@@ -74,15 +122,27 @@ const registerDefinitions = {
     icon: FileText,
     endpoint: 'transactions',
     fields: [
-      { name: 'numeroTransaction', label: 'N° Transaction', required: true },
+      { name: 'numeroTransaction', label: 'N° Transaction', required: true, placeholder: 'Ex. T-2024-001' },
       { name: 'dateTransaction', label: 'Date', type: 'date' },
-      { name: 'mandatRef', label: 'Réf. Mandat' },
-      { name: 'typeTransaction', label: 'Type de transaction' },
-      { name: 'bien', label: 'Bien concerné' },
-      { name: 'prix', label: 'Prix' },
-      { name: 'commissionTotale', label: 'Commission totale' },
-      { name: 'client', label: 'Client' },
-      { name: 'observations', label: 'Observations', type: 'textarea', fullWidth: true }
+      { name: 'mandatRef', label: 'Réf. Mandat', placeholder: 'Mandat lié' },
+      {
+        name: 'typeTransaction',
+        label: 'Type de transaction',
+        type: 'select',
+        placeholder: 'Sélectionnez un type',
+        options: ['Vente', 'Achat', 'Location', 'Cession', 'Autre']
+      },
+      { name: 'bien', label: 'Bien concerné', placeholder: 'Appartement, maison...' },
+      { name: 'prix', label: 'Prix', placeholder: 'Montant total' },
+      { name: 'commissionTotale', label: 'Commission totale', placeholder: 'Montant de la commission' },
+      { name: 'client', label: 'Client', placeholder: 'Nom du client' },
+      {
+        name: 'observations',
+        label: 'Observations',
+        type: 'textarea',
+        fullWidth: true,
+        placeholder: 'Informations complémentaires'
+      }
     ],
     columns: [
       { name: 'numeroTransaction', label: 'N° Transaction' },
@@ -99,15 +159,33 @@ const registerDefinitions = {
     icon: Home,
     endpoint: 'gestion',
     fields: [
-      { name: 'numeroBien', label: 'Réf. Bien', required: true },
-      { name: 'adresse', label: 'Adresse', type: 'textarea', fullWidth: true },
-      { name: 'proprietaire', label: 'Propriétaire' },
-      { name: 'locataire', label: 'Locataire' },
+      { name: 'numeroBien', label: 'Réf. Bien', required: true, placeholder: 'Ex. B-2024-001' },
+      {
+        name: 'adresse',
+        label: 'Adresse',
+        type: 'textarea',
+        fullWidth: true,
+        placeholder: 'Adresse complète du bien'
+      },
+      { name: 'proprietaire', label: 'Propriétaire', placeholder: 'Nom du bailleur' },
+      { name: 'locataire', label: 'Locataire', placeholder: 'Nom du locataire' },
       { name: 'dateDebutBail', label: 'Début du bail', type: 'date' },
-      { name: 'loyer', label: 'Loyer' },
-      { name: 'statutLoyer', label: 'Statut du loyer' },
+      { name: 'loyer', label: 'Loyer', placeholder: 'Montant mensuel' },
+      {
+        name: 'statutLoyer',
+        label: 'Statut du loyer',
+        type: 'select',
+        placeholder: 'Sélectionnez un statut',
+        options: ['Payé', 'Partiellement payé', 'En retard', 'Impayé']
+      },
       { name: 'datePaiement', label: 'Date de paiement', type: 'date' },
-      { name: 'observations', label: 'Observations', type: 'textarea', fullWidth: true }
+      {
+        name: 'observations',
+        label: 'Observations',
+        type: 'textarea',
+        fullWidth: true,
+        placeholder: 'Notes sur le bail ou le locataire'
+      }
     ],
     columns: [
       { name: 'numeroBien', label: 'Réf. Bien' },
@@ -123,14 +201,38 @@ const registerDefinitions = {
     icon: Search,
     endpoint: 'recherche',
     fields: [
-      { name: 'numeroDemande', label: 'N° Demande', required: true },
+      { name: 'numeroDemande', label: 'N° Demande', required: true, placeholder: 'Ex. D-2024-001' },
       { name: 'dateDemande', label: 'Date', type: 'date' },
-      { name: 'client', label: 'Client' },
-      { name: 'typeBien', label: 'Type de bien' },
-      { name: 'budget', label: 'Budget' },
-      { name: 'criteres', label: 'Critères', type: 'textarea', fullWidth: true },
-      { name: 'biensProposes', label: 'Biens proposés', type: 'textarea', fullWidth: true },
-      { name: 'statutDemande', label: 'Statut' }
+      { name: 'client', label: 'Client', placeholder: 'Nom du client' },
+      {
+        name: 'typeBien',
+        label: 'Type de bien',
+        type: 'select',
+        placeholder: 'Sélectionnez un type de bien',
+        options: ['Appartement', 'Maison', 'Terrain', 'Local commercial', 'Bureau', 'Autre']
+      },
+      { name: 'budget', label: 'Budget', placeholder: 'Montant estimé' },
+      {
+        name: 'criteres',
+        label: 'Critères',
+        type: 'textarea',
+        fullWidth: true,
+        placeholder: 'Surface, localisation, prestations...'
+      },
+      {
+        name: 'biensProposes',
+        label: 'Biens proposés',
+        type: 'textarea',
+        fullWidth: true,
+        placeholder: 'Biens envoyés au client'
+      },
+      {
+        name: 'statutDemande',
+        label: 'Statut',
+        type: 'select',
+        placeholder: 'Sélectionnez un statut',
+        options: ['En attente', 'En recherche', 'Proposition envoyée', 'Clôturée', 'Annulée']
+      }
     ],
     columns: [
       { name: 'numeroDemande', label: 'N° Demande' },
@@ -361,6 +463,11 @@ const RegisterView = ({ definition, onStatus, onUnauthorized }) => {
     setFormData(initialFormValues);
   }, [initialFormValues]);
 
+  useEffect(() => {
+    setIsFormOpen(false);
+    setFilter('');
+  }, [definition]);
+
   const fetchItems = useCallback(async () => {
     setIsLoading(true);
     setError(null);
@@ -452,7 +559,16 @@ const RegisterView = ({ definition, onStatus, onUnauthorized }) => {
             Imprimer le registre
           </button>
           <button
-            onClick={() => setIsFormOpen((prev) => !prev)}
+            onClick={() =>
+              setIsFormOpen((prev) => {
+                const next = !prev;
+                if (next) {
+                  setFormData(initialFormValues);
+                  setFilter('');
+                }
+                return next;
+              })
+            }
             className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg shadow-md hover:bg-indigo-700 transition"
           >
             <Plus className="w-5 h-5 mr-2" />
@@ -461,43 +577,57 @@ const RegisterView = ({ definition, onStatus, onUnauthorized }) => {
         </div>
       </header>
 
-      {isFormOpen && (
+      {isFormOpen ? (
         <form onSubmit={handleSubmit} className="p-6 bg-green-50 border border-green-200 rounded-xl shadow-inner">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             {definition.fields.map((field) => {
+              const wrapperClass = field.fullWidth ? 'md:col-span-2' : '';
+              const fieldValue = formData[field.name] ?? '';
+              const baseClass =
+                'w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500';
               const commonProps = {
                 id: field.name,
                 name: field.name,
-                value: formData[field.name] ?? '',
+                value: fieldValue,
                 onChange: handleInputChange,
-                required: Boolean(field.required),
-                className:
-                  'w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500'
+                required: Boolean(field.required)
               };
 
-              if (field.type === 'textarea') {
-                return (
-                  <div key={field.name} className={field.fullWidth ? 'md:col-span-2' : ''}>
-                    <label htmlFor={field.name} className="block text-sm font-medium text-gray-700 mb-1">
-                      {field.label}
-                    </label>
-                    <textarea
-                      {...commonProps}
-                      rows={3}
-                    />
-                  </div>
-                );
-              }
-
               return (
-                <div key={field.name} className={field.fullWidth ? 'md:col-span-2' : ''}>
+                <div key={field.name} className={wrapperClass}>
                   <label htmlFor={field.name} className="block text-sm font-medium text-gray-700 mb-1">
                     {field.label}
                   </label>
-                  <input
-                    {...commonProps}
-                    type={field.type || 'text'}
-                  />
+                  {field.type === 'textarea' ? (
+                    <textarea
+                      {...commonProps}
+                      rows={4}
+                      placeholder={field.placeholder}
+                      className={`${baseClass} resize-y`}
+                    />
+                  ) : field.type === 'select' ? (
+                    <select
+                      {...commonProps}
+                      className={`${baseClass} bg-white`}
+                    >
+                      <option value="" disabled={Boolean(field.required)}>
+                        {field.placeholder || 'Sélectionnez une option'}
+                      </option>
+                      {(field.options || []).map((option) => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <input
+                      {...commonProps}
+                      type={field.type || 'text'}
+                      placeholder={field.placeholder}
+                      className={baseClass}
+                      autoComplete="off"
+                    />
+                  )}
                 </div>
               );
             })}
@@ -521,19 +651,18 @@ const RegisterView = ({ definition, onStatus, onUnauthorized }) => {
             </button>
           </div>
         </form>
-      )}
+      ) : (
+        <div className="space-y-4">
+          <input
+            type="text"
+            value={filter}
+            onChange={(event) => setFilter(event.target.value)}
+            placeholder="Recherche rapide dans les fiches..."
+            className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
 
-      <div className="space-y-4">
-        <input
-          type="text"
-          value={filter}
-          onChange={(event) => setFilter(event.target.value)}
-          placeholder="Recherche rapide dans les fiches..."
-          className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
-        />
-
-        {isLoading ? (
-          <LoadingState message="Chargement des données en cours..." />
+          {isLoading ? (
+            <LoadingState message="Chargement des données en cours..." />
         ) : error ? (
           <ErrorState message={error} onRetry={fetchItems} />
         ) : filteredItems.length === 0 ? (
@@ -592,8 +721,9 @@ const RegisterView = ({ definition, onStatus, onUnauthorized }) => {
               </tbody>
             </table>
           </div>
-        )}
-      </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };
