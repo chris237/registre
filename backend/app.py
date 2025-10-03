@@ -63,68 +63,96 @@ class User(db.Model):
 
 class Mandat(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    numero = db.Column(db.String(50), nullable=False)
-    dateSignature = db.Column(db.String(50))
+    referenceMandat = db.Column('numero', db.String(50), nullable=False)
+    dateDebut = db.Column('dateSignature', db.String(50))
+    dateEcheance = db.Column(db.String(50))
     typeMandat = db.Column(db.String(50))
-    statutMandat = db.Column(db.String(50))
     typeTransaction = db.Column(db.String(50))
-    proprietaire = db.Column(db.String(100))
-    adresse = db.Column(db.Text)
-    caracteristiques = db.Column(db.Text)
-    prixSouhaite = db.Column(db.String(50))
-    commission = db.Column(db.String(50))
-    validite = db.Column(db.String(50))
-    dateFinalisation = db.Column(db.String(50))
-    acquereur = db.Column(db.String(100))
+    statutMandat = db.Column(db.String(50))
+    typeBien = db.Column(db.String(100))
+    adresseBien = db.Column('adresse', db.Text)
+    surfaceM2 = db.Column(db.String(50))
+    nbPieces = db.Column(db.String(50))
+    dpeClassement = db.Column(db.String(10))
+    prixDemande = db.Column('prixSouhaite', db.String(50))
+    honorairePourcent = db.Column('commission', db.String(50))
+    tvaApplicable = db.Column(db.String(20))
+    proprietaireNom = db.Column('proprietaire', db.String(120))
+    proprietaireCoordonnees = db.Column(db.Text)
+    clientVendeurInfos = db.Column(db.Text)
+    clientAcheteurInfos = db.Column('acquereur', db.Text)
+    agentResponsable = db.Column(db.String(120))
+    notesMandat = db.Column('caracteristiques', db.Text)
+    descriptionBien = db.Column(db.Text)
 
 
 class Transaction(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     numeroTransaction = db.Column(db.String(50), nullable=False)
-    dateTransaction = db.Column(db.String(50))
-    mandatRef = db.Column(db.String(50))
+    dateSignature = db.Column('dateTransaction', db.String(50))
+    referenceMandat = db.Column('mandatRef', db.String(50))
     typeTransaction = db.Column(db.String(50))
-    bien = db.Column(db.String(200))
-    prix = db.Column(db.String(50))
-    commissionTotale = db.Column(db.String(50))
-    client = db.Column(db.String(120))
-    observations = db.Column(db.Text)
+    clientVendeur = db.Column(db.String(120))
+    acquereurLocataire = db.Column('client', db.String(120))
+    notaire = db.Column(db.String(120))
+    prixFinal = db.Column('prix', db.String(50))
+    commissionHT = db.Column('commissionTotale', db.String(50))
+    montantTVA = db.Column(db.String(50))
+    conditionsSusp = db.Column(db.String(20))
+    statutReglement = db.Column(db.String(50))
+    notesTransaction = db.Column('observations', db.Text)
 
 
 class Suivi(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    numeroMandat = db.Column(db.String(50), nullable=False)
-    dateSuivi = db.Column(db.String(50))
-    action = db.Column(db.String(100))
-    contact = db.Column(db.String(120))
-    resultat = db.Column(db.String(200))
+    referenceMandat = db.Column('numeroMandat', db.String(50), nullable=False)
+    dateAction = db.Column('dateSuivi', db.String(50))
+    typeAction = db.Column('action', db.String(100))
+    contactClient = db.Column('contact', db.String(120))
+    intensiteAction = db.Column(db.String(20))
+    details = db.Column('resultat', db.Text)
     prochaineEtape = db.Column(db.String(200))
-    datePrevue = db.Column(db.String(50))
+    dateProchaineAction = db.Column('datePrevue', db.String(50))
+    agent = db.Column(db.String(120))
 
 
 class Recherche(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     numeroDemande = db.Column(db.String(50), nullable=False)
     dateDemande = db.Column(db.String(50))
-    client = db.Column(db.String(120))
-    typeBien = db.Column(db.String(120))
-    budget = db.Column(db.String(50))
-    criteres = db.Column(db.Text)
+    clientNom = db.Column('client', db.String(120))
+    telephone = db.Column(db.String(50))
+    typeRecherche = db.Column(db.String(120))
+    budgetMin = db.Column(db.String(50))
+    budgetMax = db.Column(db.String(50))
+    secteurGeographique = db.Column(db.Text)
+    delaiSouhaite = db.Column(db.String(50))
+    motivations = db.Column(db.Text)
+    criteresSpecifiques = db.Column('criteres', db.Text)
     biensProposes = db.Column(db.Text)
     statutDemande = db.Column(db.String(100))
+    agentSuivi = db.Column(db.String(120))
 
 
 class GestionLocative(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    referenceMandat = db.Column(db.String(50))
     numeroBien = db.Column(db.String(50), nullable=False)
-    adresse = db.Column(db.Text)
-    proprietaire = db.Column(db.String(120))
-    locataire = db.Column(db.String(120))
-    dateDebutBail = db.Column(db.String(50))
-    loyer = db.Column(db.String(50))
-    statutLoyer = db.Column(db.String(100))
+    adresseBien = db.Column('adresse', db.Text)
+    proprietaireNom = db.Column('proprietaire', db.String(120))
+    proprietaireCoordonnees = db.Column(db.Text)
+    locataireNom = db.Column('locataire', db.String(120))
+    locataireCoordonnees = db.Column(db.Text)
+    debutBail = db.Column('dateDebutBail', db.String(50))
+    finBail = db.Column(db.String(50))
+    montantLoyerBase = db.Column('loyer', db.String(50))
+    montantCharges = db.Column(db.String(50))
+    depotGarantie = db.Column(db.String(50))
+    irl = db.Column(db.String(50))
+    dateProchaineIndexation = db.Column(db.String(50))
+    etatPaiement = db.Column('statutLoyer', db.String(100))
     datePaiement = db.Column(db.String(50))
-    observations = db.Column(db.Text)
+    notesIncident = db.Column('observations', db.Text)
 
 # ---- HELPERS ----
 def ensure_default_admin():
@@ -144,46 +172,82 @@ def ensure_schema():
             ('dateSignature', 'VARCHAR(50)'),
             ('statutMandat', 'VARCHAR(50)'),
             ('typeTransaction', 'VARCHAR(50)'),
-            ('proprietaire', 'VARCHAR(100)'),
+            ('typeBien', 'VARCHAR(100)'),
             ('adresse', 'TEXT'),
-            ('caracteristiques', 'TEXT'),
+            ('surfaceM2', 'VARCHAR(50)'),
+            ('nbPieces', 'VARCHAR(50)'),
+            ('dpeClassement', 'VARCHAR(10)'),
             ('prixSouhaite', 'VARCHAR(50)'),
             ('commission', 'VARCHAR(50)'),
-            ('validite', 'VARCHAR(50)'),
+            ('tvaApplicable', 'VARCHAR(20)'),
+            ('proprietaire', 'VARCHAR(120)'),
+            ('proprietaireCoordonnees', 'TEXT'),
+            ('clientVendeurInfos', 'TEXT'),
+            ('acquereur', 'TEXT'),
+            ('caracteristiques', 'TEXT'),
+            ('descriptionBien', 'TEXT'),
             ('dateFinalisation', 'VARCHAR(50)'),
-            ('acquereur', 'VARCHAR(100)')
+            ('validite', 'VARCHAR(50)'),
+            ('dateEcheance', 'VARCHAR(50)'),
+            ('agentResponsable', 'VARCHAR(120)')
         ],
         'transaction': [
             ('numeroTransaction', 'VARCHAR(50)'),
             ('dateTransaction', 'VARCHAR(50)'),
             ('mandatRef', 'VARCHAR(50)'),
             ('typeTransaction', 'VARCHAR(50)'),
+            ('clientVendeur', 'VARCHAR(120)'),
             ('prix', 'VARCHAR(50)'),
             ('commissionTotale', 'VARCHAR(50)'),
             ('client', 'VARCHAR(120)'),
+            ('notaire', 'VARCHAR(120)'),
+            ('montantTVA', 'VARCHAR(50)'),
+            ('conditionsSusp', 'VARCHAR(20)'),
+            ('statutReglement', 'VARCHAR(50)'),
             ('observations', 'TEXT')
         ],
         'suivi': [
+            ('numeroMandat', 'VARCHAR(50)'),
             ('dateSuivi', 'VARCHAR(50)'),
+            ('action', 'VARCHAR(100)'),
             ('contact', 'VARCHAR(120)'),
-            ('resultat', 'VARCHAR(200)'),
+            ('intensiteAction', 'VARCHAR(20)'),
+            ('resultat', 'TEXT'),
             ('prochaineEtape', 'VARCHAR(200)'),
-            ('datePrevue', 'VARCHAR(50)')
+            ('datePrevue', 'VARCHAR(50)'),
+            ('agent', 'VARCHAR(120)')
         ],
         'recherche': [
             ('numeroDemande', 'VARCHAR(50)'),
             ('dateDemande', 'VARCHAR(50)'),
-            ('typeBien', 'VARCHAR(120)'),
+            ('client', 'VARCHAR(120)'),
+            ('telephone', 'VARCHAR(50)'),
+            ('typeRecherche', 'VARCHAR(120)'),
+            ('budgetMin', 'VARCHAR(50)'),
             ('budget', 'VARCHAR(50)'),
+            ('budgetMax', 'VARCHAR(50)'),
+            ('secteurGeographique', 'TEXT'),
+            ('delaiSouhaite', 'VARCHAR(50)'),
+            ('motivations', 'TEXT'),
             ('criteres', 'TEXT'),
             ('biensProposes', 'TEXT'),
-            ('statutDemande', 'VARCHAR(100)')
+            ('statutDemande', 'VARCHAR(100)'),
+            ('agentSuivi', 'VARCHAR(120)')
         ],
         'gestion_locative': [
+            ('referenceMandat', 'VARCHAR(50)'),
             ('adresse', 'TEXT'),
             ('proprietaire', 'VARCHAR(120)'),
+            ('proprietaireCoordonnees', 'TEXT'),
+            ('locataire', 'VARCHAR(120)'),
+            ('locataireCoordonnees', 'TEXT'),
             ('dateDebutBail', 'VARCHAR(50)'),
+            ('finBail', 'VARCHAR(50)'),
             ('loyer', 'VARCHAR(50)'),
+            ('montantCharges', 'VARCHAR(50)'),
+            ('depotGarantie', 'VARCHAR(50)'),
+            ('irl', 'VARCHAR(50)'),
+            ('dateProchaineIndexation', 'VARCHAR(50)'),
             ('statutLoyer', 'VARCHAR(100)'),
             ('datePaiement', 'VARCHAR(50)'),
             ('observations', 'TEXT')
