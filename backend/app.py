@@ -9,6 +9,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from logging.handlers import RotatingFileHandler
 from sqlalchemy import text
+from sqlalchemy.inspection import inspect
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
